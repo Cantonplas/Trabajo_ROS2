@@ -25,7 +25,9 @@ class TurtleFollower(Node):
         self.current_angular_vel = 0.0
         self.current_distance = 999.9  
         
-        self.callback_group = ReentrantCallbackGroup()
+        self.callback_group = ReentrantCallbackGroup() #Utilizamos multi thread
+        #No necesitamos locks por la existencia de GIL de python(objetos atomicos de python) 
+        # y los calculos que se ejecutan en el bucle de control también son atomicos
 
         #E1
         self.spawn_client = self.create_client(Spawn, 'spawn', callback_group=self.callback_group)
@@ -83,8 +85,10 @@ class TurtleFollower(Node):
         
         msg = Twist()
         if self.current_distance > 0.5:
-            #Explicar el control proporcional
-            msg.linear.x = 1.0 * self.current_distance
+            #He ralentizado la velocidad para testing que la action tarde en ejecutarse :p
+            # k_prop = 1.0
+            k_prop = 0.7
+            msg.linear.x = k_prop * self.current_distance
             desired_theta = math.atan2(dy, dx)
             diff = desired_theta - self.explorer_pose.theta
 
@@ -95,7 +99,6 @@ class TurtleFollower(Node):
 
             msg.angular.z = 4.0 * diff
         else:
-            #Frena al final
             msg.linear.x = 0.0
             msg.angular.z = 0.0
         
@@ -125,8 +128,7 @@ class TurtleFollower(Node):
 
             if self.target_pose and self.explorer_pose:
                 self.fill_info(feedback_msg)
-                goal_handle.publish_feedback(feedback_msg)
-                # self.get_logger().info(f'Feedback: Distancia {self.current_distance:.2f}m')
+                goal_handle.publish_feedback(feedback_msg) #Mandamos datos de E3 como feedback
 
             time.sleep(1.0)
 
