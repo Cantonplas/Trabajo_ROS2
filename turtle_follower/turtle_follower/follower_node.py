@@ -3,6 +3,7 @@ from rclpy.node import Node
 from turtlesim.srv import Spawn
 from turtlesim.msg import Pose
 from geometry_msgs.msg import Twist
+from turtle_interfaces.srv import TurtleInfo
 import math
 
 class TurtleFollower(Node):
@@ -29,6 +30,12 @@ class TurtleFollower(Node):
             '/explorer/pose',
             self.explorer_pose_callback,
             10)
+        
+        self.server_info = self.create_service(
+            TurtleInfo, 
+            'turtle_info', 
+            self.turtle_info_callback
+        )
 
         self.publisher_vel = self.create_publisher(Twist, '/explorer/cmd_vel', 10)
 
@@ -81,8 +88,33 @@ class TurtleFollower(Node):
         else:
             msg.linear.x = 0.0
             msg.angular.z = 0.0
+
+        self.current_linear_vel = msg.linear.x
+        self.current_angular_vel = msg.angular.z
         
         self.publisher_vel.publish(msg)
+
+    def turtle_info_callback(self, request, response):
+        if self.target_pose is None or self.explorer_pose is None:
+            self.get_logger().warn('Datos no disponibles todavía')
+            return response
+
+        response.target_x = self.target_pose.x
+        response.target_y = self.target_pose.y
+        response.target_theta = self.target_pose.theta
+
+        response.explorer_x = self.explorer_pose.x
+        response.explorer_y = self.explorer_pose.y
+        response.explorer_theta = self.explorer_pose.theta
+
+        response.explorer_linear_vel = self.current_linear_vel
+        response.explorer_angular_vel = self.current_angular_vel
+
+        dx = self.target_pose.x - self.explorer_pose.x
+        dy = self.target_pose.y - self.explorer_pose.y
+        response.distance = math.sqrt(dx**2 + dy**2)
+
+        return response
 
 def main(args=None):
     rclpy.init(args=args)

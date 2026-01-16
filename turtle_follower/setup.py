@@ -25,6 +25,7 @@ setup(
     entry_points={
         'console_scripts': [
             'follower_node = turtle_follower.follower_node:main',
+            'info_client = turtle_follower.info_client:main', 
         ],
     },
 )
