@@ -1,0 +1,16 @@
+
+---
+# 2. RESULT 
+string message
+bool success
+---
+# 3. FEEDBACK
+float32 target_x
+float32 target_y
+float32 target_theta
+float32 explorer_x
+float32 explorer_y
+float32 explorer_theta
+float32 explorer_linear_vel
+float32 explorer_angular_vel
+float32 distance

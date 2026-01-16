@@ -1,0 +1,13 @@
+<launch>
+    <arg name="explorer_x" default="2.0"/>
+    <arg name="explorer_y" default="2.0"/>
+
+    <node pkg="turtlesim" exec="turtlesim_node" name="simulador"/>
+
+    <node pkg="turtle_follower" exec="follower_node" name="follower_node">
+        <param name="explorer_x" value="$(var explorer_x)"/>
+        <param name="explorer_y" value="$(var explorer_y)"/>
+    </node>
+
+    <node pkg="turtle_follower" exec="info_client" name="info_client" output="screen"/>
+</launch>
