@@ -110,8 +110,18 @@ class TurtleFollower(Node):
 
     # Callback E3
     def turtle_info_callback(self, request, response):
-        if self.target_pose is None or self.explorer_pose is None: return response
-        self.fill_info(response)
+        if self.target_pose is None or self.explorer_pose is None: 
+            return response
+        
+        response.target_x = self.target_pose.x
+        response.target_y = self.target_pose.y
+        response.target_theta = self.target_pose.theta
+        response.explorer_x = self.explorer_pose.x
+        response.explorer_y = self.explorer_pose.y
+        response.explorer_theta = self.explorer_pose.theta
+        response.explorer_linear_vel = self.current_linear_vel
+        response.explorer_angular_vel = self.current_angular_vel
+        response.distance = self.current_distance
         return response
 
     # Callback E6
@@ -124,7 +134,15 @@ class TurtleFollower(Node):
         while self.current_distance > 0.6:
 
             if self.target_pose and self.explorer_pose:
-                self.fill_info(feedback_msg)
+                feedback_msg.target_x = self.target_pose.x
+                feedback_msg.target_y = self.target_pose.y
+                feedback_msg.target_theta = self.target_pose.theta
+                feedback_msg.explorer_x = self.explorer_pose.x
+                feedback_msg.explorer_y = self.explorer_pose.y
+                feedback_msg.explorer_theta = self.explorer_pose.theta
+                feedback_msg.explorer_linear_vel = self.current_linear_vel
+                feedback_msg.explorer_angular_vel = self.current_angular_vel
+                feedback_msg.distance = self.current_distance
                 goal_handle.publish_feedback(feedback_msg) #Mandamos datos de E3 como feedback
 
             time.sleep(1.0)
@@ -137,16 +155,6 @@ class TurtleFollower(Node):
         result.message = "Tortuga alcanzada con éxito."
         return result
 
-    def fill_info(self, data_object):
-        data_object.target_x = self.target_pose.x
-        data_object.target_y = self.target_pose.y
-        data_object.target_theta = self.target_pose.theta
-        data_object.explorer_x = self.explorer_pose.x
-        data_object.explorer_y = self.explorer_pose.y
-        data_object.explorer_theta = self.explorer_pose.theta
-        data_object.explorer_linear_vel = self.current_linear_vel
-        data_object.explorer_angular_vel = self.current_angular_vel
-        data_object.distance = self.current_distance
 
 def main(args=None):
     rclpy.init(args=args)
