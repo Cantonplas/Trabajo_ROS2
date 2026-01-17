@@ -1,7 +1,7 @@
 import rclpy
 from rclpy.node import Node
 from rclpy.action import ActionServer
-from rclpy.callback_groups import ReentrantCallbackGroup
+from rclpy.callback_groups import MutuallyExclusiveCallbackGroup
 from rclpy.executors import MultiThreadedExecutor
 from turtlesim.srv import Spawn
 from turtlesim.msg import Pose
@@ -25,9 +25,9 @@ class TurtleFollower(Node):
         self.current_angular_vel = 0.0
         self.current_distance = 999.9  
         
-        self.callback_group = ReentrantCallbackGroup() #Utilizamos multi thread
-        #No necesitamos locks por la existencia de GIL de python(objetos atomicos de python) 
-        # y los calculos que se ejecutan en el bucle de control también son atomicos
+        self.callback_group = MutuallyExclusiveCallbackGroup() 
+        #No necesitamos locks para estos hilos por usar MutuallyExclusiveCallbackGroup, información aqui:
+        #https://www.theconstruct.ai/speed-up-data-processing-with-multi-threaded-execution-english-ros2-tutorial/
 
         #E1
         self.spawn_client = self.create_client(Spawn, 'spawn', callback_group=self.callback_group)
@@ -38,8 +38,10 @@ class TurtleFollower(Node):
         #E2
         self.subscription_target = self.create_subscription(
             Pose, '/turtle1/pose', self.target_pose_callback, 10, callback_group=self.callback_group)
+        
         self.subscription_explorer = self.create_subscription(
             Pose, '/explorer/pose', self.explorer_pose_callback, 10, callback_group=self.callback_group)
+        
         self.publisher_vel = self.create_publisher(Twist, '/explorer/cmd_vel', 10, callback_group=self.callback_group)
 
         # Loop control
@@ -120,11 +122,6 @@ class TurtleFollower(Node):
         
 
         while self.current_distance > 0.6:
-
-            if goal_handle.is_cancel_requested:
-                goal_handle.canceled()
-                self.get_logger().info('Acción cancelada por cliente.')
-                return CatchTurtle.Result(success=False, message="Cancelado")
 
             if self.target_pose and self.explorer_pose:
                 self.fill_info(feedback_msg)
