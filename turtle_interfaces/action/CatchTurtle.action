@@ -15,4 +15,4 @@ float32 explorer_linear_vel
 float32 explorer_angular_vel
 float32 distance
 
-#Fuente para esta action: https://docs.ros.org/en/foxy/Tutorials/Intermediate/Creating-an-Action.html#defining-an-action
+#Referencia: https://docs.ros.org/en/foxy/Tutorials/Intermediate/Creating-an-Action.html#defining-an-action
