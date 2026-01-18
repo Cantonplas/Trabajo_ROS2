@@ -6,7 +6,8 @@
   <description>TODO: Package description</description>
   <maintainer email="daniel@todo.todo">daniel</maintainer>
   <license>TODO: License declaration</license>
-
+   <!-- Referencia para este package.xml: https://docs.ros.org/en/foxy/Tutorials/Beginner-Client-Libraries/Creating-Your-First-ROS2-Package.html#create-a-package-->
+     <!-- Tambien: https://docs.ros.org/en/foxy/Tutorials/Beginner-Client-Libraries/Custom-ROS2-Interfaces.html-->
   <depend>rclpy</depend>
   <depend>turtlesim</depend>
   <depend>geometry_msgs</depend>
