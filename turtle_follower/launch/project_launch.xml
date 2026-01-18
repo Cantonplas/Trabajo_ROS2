@@ -11,3 +11,5 @@
 
     <node pkg="turtle_follower" exec="info_client" name="info_client" output="screen"/>
 </launch>
+
+<!-- Referencia: https://docs.ros.org/en/foxy/How-To-Guides/Launch-file-different-formats.html -->
