@@ -7,6 +7,7 @@
   <maintainer email="daniel@todo.todo">daniel</maintainer>
   <license>TODO: License declaration</license>
    <!-- Fuente para este xml: https://docs.ros.org/en/foxy/Tutorials/Beginner-Client-Libraries/Creating-Your-First-ROS2-Package.html#create-a-package-->
+     <!-- Tambien: https://docs.ros.org/en/foxy/Tutorials/Beginner-Client-Libraries/Custom-ROS2-Interfaces.html-->
 
   <buildtool_depend>ament_cmake</buildtool_depend>
   <build_depend>rosidl_default_generators</build_depend>
