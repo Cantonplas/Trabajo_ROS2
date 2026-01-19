@@ -132,8 +132,12 @@ class TurtleFollower(Node):
         
 
         while self.current_distance > 0.6:
-
             if self.target_pose and self.explorer_pose:
+                if goal_handle.is_cancel_requested:
+                    goal_handle.canceled()
+                    self.get_logger().info('Accion cancelada')
+                    return CatchTurtle.Result(success=False, message="acción cancelada")
+                    
                 feedback_msg.target_x = self.target_pose.x
                 feedback_msg.target_y = self.target_pose.y
                 feedback_msg.target_theta = self.target_pose.theta
